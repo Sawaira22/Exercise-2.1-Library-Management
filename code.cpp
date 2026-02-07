@@ -1,176 +1,186 @@
 #include <iostream>
+#include<cstring>
 using namespace std;
-struct Song {
+struct Song
+{
     int id;
-    string title;
-    string artist;
-    float duration;
-
-    Song* next;
+    char title[40];
+    char artist[40];
+    int duration;
     Song* prev;
+    Song* next;
 };
 Song* start = NULL;
 Song* current = NULL;
-void insertSong() {
 
+void insertSong()
+{
     Song* temp = new Song;
-    cout << "\nEnter Song ID: ";
+    cout << "Enter Song ID: ";
     cin >> temp->id;
-    cout << "Enter Song Title: ";
+    cout << "Enter Title: ";
     cin >> temp->title;
-    cout << "Enter Artist Name: ";
+
+    cout << "Enter Artist: ";
     cin >> temp->artist;
+
     cout << "Enter Duration: ";
     cin >> temp->duration;
 
     temp->next = NULL;
     temp->prev = NULL;
 
-    if (start == NULL) {
+    if (start == NULL)
+    {
         start = temp;
         current = temp;
-    } 
-    else {
-        Song* t = start;
-        while (t->next != NULL)
-            t = t->next;
-
-        t->next = temp;
-        temp->prev = t;
     }
-    cout << "Song inserted!\n";
+    else
+    {
+        Song* cur = start;
+        while (cur->next != NULL)
+            cur = cur->next;
+
+        cur->next = temp;
+        temp->prev = cur;
+    }
+
+    cout << "Song Added"<<endl;
 }
-Song* searchSong(string key) {
-    Song* temp = start;
 
-    while (temp != NULL) {
-        if (temp->title == key || temp->artist == key)
-            return temp;
-        temp = temp->next;
-    }
-    return NULL;
-}
-void modifySong() {
-    string key;
-    cout << "\nEnter Title OR Artist to modify: ";
-    cin >> key;
+void searchSong()
+{
+    char name[40];
+    cout << "Enter Title to Search: ";
+    cin >> name;
 
-    Song* temp = searchSong(key);
-
-    if (temp == NULL) {
-        cout << "Song not found!\n";
-        return;
-    }
-
-    cout << "Enter New Title: ";
-    cin >> temp->title;
-
-    cout << "Enter New Artist: ";
-    cin >> temp->artist;
-
-    cout << "Enter New Duration: ";
-    cin >> temp->duration;
-
-    cout << "Song updated!\n";
-}
-void displayPlaylist() {
-
-    if (start == NULL) {
-        cout << "\nPlaylist empty!\n";
-        return;
-    }
-
-    Song* temp = start;
-    int count = 0;
-    float total = 0;
-
-    cout << "\nPlaylist\n";
-
-    while (temp != NULL) {
-        cout << "ID: " << temp->id << "\n";
-        cout << "Title: " << temp->title << "\n";
-        cout << "Artist: " << temp->artist << "\n";
-        cout << "Duration: " << temp->duration << "\n\n";
-
-        count++;
-        total += temp->duration;
-
-        temp = temp->next;
-    }
-
-    cout << "Total Songs: " << count << "\n";
-    cout << "Total Duration: " << total << "\n";
-}
-void playNext() {
-    if (current == NULL) {
-        cout << "No songs!\n";
-        return;
-    }
-
-    if (current->next == NULL) {
-        cout << "Already last song!\n";
-    }
-    else {
-        current = current->next;
-        cout << "Playing: " << current->title << "\n";
-    }
-}
-void playPrevious() {
-    if (current == NULL) {
-        cout << "No songs!\n";
-        return;
-    }
-    if (current->prev == NULL) {
-        cout << "Already first song!\n";
-    }
-    else {
-        current = current->prev;
-        cout << "Playing: " << current->title << "\n";
-    }
-}
-int main() {
-    int ch;
-    do {
-        cout << "\n1. Insert\n";
-        cout << "2. Search\n";
-        cout << "3. Modify\n";
-        cout << "4. Display\n";
-        cout << "5. Play Next\n";
-        cout << "6. Play Previous\n";
-        cout << "7. Exit\n";
-
-        cout << "Enter choice: ";
-        cin >> ch;
-
-        switch (ch) {
-
-            case 1: insertSong(); break;
-
-            case 2: {
-                string key;
-                cout << "Enter Title OR Artist to search: ";
-                cin >> key;
-                Song* temp = searchSong(key);
-
-                if (temp == NULL)
-                    cout << "Song not found!\n";
-                else
-                    cout << "Song Found: " << temp->title << "\n";
-                break;
-            }
-            case 3: modifySong();
-			   break;
-            case 4: displayPlaylist();
-			   break;
-
-            case 5: playNext();
-			  break;
-            case 6: playPrevious(); 
-			   break;
-            case 7: cout << "Exiting\n";
-			   break;
-            default: cout << "Invalid choice!\n";
+    Song* cur = start;
+    while (cur != NULL)
+    {
+        if (strcmp(cur->title, name) == 0)
+        {
+            cout << "Song Found\n";
+            cout << "ID: " << cur->id << endl;
+            cout << "Title: " << cur->title << endl;
+            cout << "Artist: " << cur->artist << endl;
+            cout << "Duration: " << cur->duration << endl;
+            return;
         }
-    } while (ch != 7);
+        cur = cur->next;
+    }
+    cout << "Song Not Found\n";
+}
+
+void modifySong()
+{
+    int id;
+    cout << "Enter Song ID to Modify: ";
+    cin >> id;
+
+    Song* cur = start;
+    while (cur != NULL)
+    {
+        if (cur->id == id)
+        {
+            cout << "Enter New Title: ";
+            cin >> cur->title;
+
+            cout << "Enter New Artist: ";
+            cin >> cur->artist;
+
+            cout << "Enter New Duration: ";
+            cin >> cur->duration;
+
+            cout << "Song Updated\n";
+            return;
+        }
+        cur = cur->next;
+    }
+    cout << "Song Not Found\n";
+}
+
+void displaySongs()
+{
+    Song* cur = start;
+    int total = 0;
+    int time = 0;
+
+    if (cur == NULL)
+    {
+        cout << "Playlist Empty\n";
+        return;
+    }
+
+    while (cur != NULL)
+    {
+        cout << "ID: " << cur->id << endl;
+        cout << "Title: " << cur->title << endl;
+        cout << "Artist: " << cur->artist << endl;
+        cout << "Duration: " << cur->duration << endl << endl;
+
+        total++;
+        time += cur->duration;
+        cur = cur->next;
+    }
+
+    cout << "Total Songs: " << total << endl;
+    cout << "Total Duration: " << time << endl;
+}
+
+void playNext()
+{
+    if (current != NULL && current->next != NULL)
+    {
+        current = current->next;
+        cout << "Now Playing: " << current->title << endl;
+    }
+    else
+    {
+        cout << "No Next Song\n";
+    }
+}
+
+void playPrevious()
+{
+    if (current != NULL && current->prev != NULL)
+    {
+        current = current->prev;
+        cout << "Now Playing: " << current->title << endl;
+    }
+    else
+    {
+        cout << "No Previous Song"<<endl;
+    }
+}
+int main()
+{
+    int choice;
+    do
+    {
+        cout << "\n1. Insert Song";
+        cout << "\n2. Search Song";
+        cout << "\n3. Modify Song";
+        cout << "\n4. Display Songs";
+        cout << "\n5. Play Next";
+        cout << "\n6. Play Previous";
+        cout << "\n7. Exit";
+        cout << "\nEnter Choice: ";
+        cin >> choice;
+
+        if (choice == 1)
+            insertSong();
+        else if (choice == 2)
+            searchSong();
+        else if (choice == 3)
+            modifySong();
+        else if (choice == 4)
+            displaySongs();
+        else if (choice == 5)
+            playNext();
+        else if (choice == 6)
+            playPrevious();
+
+    } while (choice != 7);
+
     return 0;
 }
